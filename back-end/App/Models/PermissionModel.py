@@ -4,14 +4,14 @@ import uuid
 
 # Configuração da conexão com o MongoDB
 client = MongoClient("mongodb://user:password@db:27017/")
-db = client["AppDatabase"]  # Substitua pelo nome do seu banco de dados
+db = client["AppDatabase"]
 permissions_collection = db["permissions"]
 
 class PermissionModel:
     def __init__(self, name, features):
         self.id = str(uuid.uuid4())
         self.name = name
-        self.features = features  # Lista de funcionalidades associadas
+        self.features = features
 
     def to_dict(self):
         return {

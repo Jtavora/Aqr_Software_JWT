@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from jose import jwt, JWTError
-from App.Models import UserModel  # Certifique-se de que UserModel está configurado para MongoDB
+from App.Models import UserModel, PermissionModel
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
@@ -31,6 +31,12 @@ class Auth:
                 hashed_password=crypto.hash("admin"), 
                 role="admin")
                 UserModel.create_user(user)
+
+                permission = PermissionModel(
+                    name="admin",
+                    permission="all"
+                )
+                PermissionModel.create_permission(permission)
             else:
                 return None
 
@@ -48,7 +54,7 @@ class Auth:
             "exp": exp.isoformat(),
             "role": user.role,
             "username": user.username,
-            "id": str(user.id)  # Converte ObjectId para string
+            "id": str(user.id)
         }
 
     def verify_token(self, token):

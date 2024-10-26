@@ -10,7 +10,7 @@ def create_user(user: User):
     usuario = user_controller.create_user(user)
     if usuario:
         return usuario
-    raise HTTPException(status_code=400, detail="User already exists")
+    raise HTTPException(status_code=400, detail="Error creating: Role doesn`t exists or User already exists")
 
 @userRouter.get("/get_all_users")
 def get_all_users():
