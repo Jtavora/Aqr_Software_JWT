@@ -26,7 +26,7 @@ class UserModel:
     def create_user(user_data):
         result = users_collection.insert_one(user_data.to_dict())
         if result:
-            return str(user_data.to_dict())
+            return user_data.to_dict()
         return None
 
     @staticmethod

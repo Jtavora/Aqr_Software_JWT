@@ -28,16 +28,16 @@ class Login(BaseModel):
 # Modelos de permissão
 class Permission(BaseModel):
     name: str
-    features: str
+    features: List[str]
 
 class PermissionResponse(BaseModel):
     id: UUID4
     name: str
-    features: str
+    features: List[str]
 
 class PermissionUpdate(BaseModel):
     name: str
-    features: str
+    features: List[str]
 
 class PermissionListResponse(BaseModel):
     permissions: List[PermissionResponse]

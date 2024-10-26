@@ -34,7 +34,7 @@ class Auth:
 
                 permission = PermissionModel(
                     name="admin",
-                    permission="all"
+                    features=["all"]
                 )
                 PermissionModel.create_permission(permission)
             else:
@@ -43,6 +43,7 @@ class Auth:
         exp = datetime.utcnow() + timedelta(minutes=30)
         payload = {
             "sub": user.username,
+            "role": user.role,
             "exp": exp
         }
 

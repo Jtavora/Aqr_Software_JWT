@@ -39,3 +39,9 @@ class PermissionModel:
         """Retorna todas as permissões."""
         permissions = permissions_collection.find()
         return list(permissions)
+    
+    @staticmethod
+    def get_features_by_role(role):
+        """Retorna as funcionalidades de uma permissão."""
+        permission = permissions_collection.find_one({"name": role})
+        return permission['features'] if permission else None
