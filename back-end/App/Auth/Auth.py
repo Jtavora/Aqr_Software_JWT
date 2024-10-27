@@ -4,12 +4,12 @@ from jose import jwt, JWTError
 from App.Models import UserModel, PermissionModel
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from App.ABAC import Abac
+from fastapi.responses import JSONResponse
 
-# Configuração do contexto de criptografia
 crypto = CryptContext(schemes=["sha256_crypt"])
 load_dotenv()
 
-# Carregando as variáveis de ambiente
 secret_key = os.getenv("SECRET_KEY")
 algorithm = os.getenv("ALGORITHM")
 
@@ -17,13 +17,17 @@ class Auth:
     def __init__(self):
         self.secret_key = secret_key
         self.algorithm = algorithm
+        self.abac = Abac()
 
     def user_login(self, data):
+        if not self.abac.can_acess(data.location):
+            return JSONResponse(status_code=403, content={"message": "Location not allowed"})
+        
         user = UserModel.get_user_by_username(data.username)
 
         if user:
             if not crypto.verify(data.password, user.hashed_password):
-                return None
+                return JSONResponse(status_code=403, content={"message": "Invalid credentials"})
         else:
             if data.username == "admin" and data.password == "admin":
                 user = UserModel(
@@ -37,12 +41,13 @@ class Auth:
                     features=["all"]
                 )
                 PermissionModel.create_permission(permission)
+                
             else:
-                return None
+                return JSONResponse(status_code=403, content={"message": "Invalid credentials"})
 
         exp = datetime.utcnow() + timedelta(minutes=30)
         payload = {
-            "sub": user.username,
+            "username": user.username,
             "role": user.role,
             "exp": exp
         }
@@ -63,4 +68,4 @@ class Auth:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
             return payload
         except JWTError:
-            return None
+            return JSONResponse(status_code=403, content={"message": "Invalid token"})

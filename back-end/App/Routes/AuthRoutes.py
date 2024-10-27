@@ -8,7 +8,7 @@ from fastapi import Depends
 auth = Auth()
 
 @loginRouter.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: Login):
     token = auth.user_login(form_data)
     if not token:
         raise HTTPException(status_code=401, detail="Invalid credentials")

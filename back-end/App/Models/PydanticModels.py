@@ -24,6 +24,7 @@ class UserResponse(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
+    location: str
 
 # Modelos de permissão
 class Permission(BaseModel):

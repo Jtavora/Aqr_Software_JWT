@@ -1,13 +1,13 @@
 from fastapi import APIRouter
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 from fastapi import Depends
 from App.Auth import Auth
 
 authe = Auth()
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+token_scheme = HTTPBearer()
 
-def token_verifier(token: str = Depends(oauth_scheme)):
-    data = authe.verify_token(token)
+def token_verifier(token: str = Depends(token_scheme)):
+    data = authe.verify_token(token.credentials)
     return data
 
 userRouter = APIRouter(dependencies=[Depends(token_verifier)])
